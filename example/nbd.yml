@@ -1,0 +1,22 @@
+- &sdb
+  Path:         '/dev/sdb'
+
+- # anonymous
+  Module: 'nbd-server'
+  Name:   'expt'
+  Device: *sdb
+
+- # anonymous 2
+  Module: 'nbd-server'
+  Name:   'expt2'
+  Device: *sdb
+
+- &nbd0
+  Module: 'nbd-client'
+  Name:   'nbd0'
+  Export: 'expt'
+
+- &nbd1
+  Module: 'nbd-client'
+  Name:   'nbd1'
+  Export: 'expt2'

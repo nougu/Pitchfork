@@ -1,0 +1,41 @@
+- &dummy3
+  Module:       'command'
+  Exec:         'dd if=/dev/zero of=/tmp/dummy3.out bs=100M count=1'
+  Unexec:       'rm -f /tmp/dummy3.out'
+  Path:         '/tmp/dummy3.out'
+
+- &dummy4
+  Module:       'command'
+  Exec:         'dd if=/dev/zero of=/tmp/dummy4.out bs=100M count=1'
+  Unexec:       'rm -f /tmp/dummy4.out'
+  Path:         '/tmp/dummy4.out'
+
+- &dummy5
+  Module:       'command'
+  Exec:         'dd if=/dev/zero of=/tmp/dummy5.out bs=100M count=1'
+  Unexec:       'rm -f /tmp/dummy5.out'
+  Path:         '/tmp/dummy5.out'
+
+- &loop3
+  Module:       'loopback'
+  Name:         'loop3'
+  Backend:      *dummy3
+
+- &loop4
+  Module:       'loopback'
+  Name:         'loop4'
+  Backend:      *dummy4
+
+- &loop5
+  Module:       'loopback'
+  Name:         'loop5'
+  Backend:      *dummy5
+
+- &md
+  Module:       'md'
+  Name:         'md3'
+  Level:        '5'
+  Devices:
+    - *loop3
+    - *loop4
+    - *loop5

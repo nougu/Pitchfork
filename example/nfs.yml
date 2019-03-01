@@ -1,0 +1,40 @@
+- &dummy3
+  Module:       'command'
+  Exec:         'dd if=/dev/zero of=/tmp/dummy3.out bs=100M count=1'
+  Unexec:       'rm -f /tmp/dummy3.out'
+  Path:         '/tmp/dummy3.out'
+
+- &dummy4
+  Module:       'command'
+  Exec:         'dd if=/dev/zero of=/tmp/dummy4.out bs=100M count=1'
+  Unexec:       'rm -f /tmp/dummy4.out'
+  Path:         '/tmp/dummy4.out'
+
+- &loop2
+  Module:       'loopback'
+  Name:         'loop2'
+  Backend:      *dummy3
+
+- &loop3
+  Module:       'loopback'
+  Name:         'loop3'
+  Backend:      *dummy4
+
+- &md
+  Module:       'md'
+  Name:         'md3'
+  Level:        '1'
+  Devices:
+    - *loop2
+    - *loop3
+
+- &xfs
+  Module:       'xfs'
+  Mount:        '/mnt/fs'
+  Backend:      *md
+
+- &nfs
+  Module:       'nfs-server'
+  Export:       '/mnt/fs'
+  Host:         '*'
+  Option:       'rw,no_root_squash'

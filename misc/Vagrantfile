@@ -1,0 +1,17 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Dir.mkdir('tmp') unless Dir.exists?('tmp')
+
+Vagrant.configure(2) do |config|
+    config.ssh.username = 'root'
+    config.vm.box = 'pitchfork-devel'
+    config.vm.provider :virtualbox do |vb|
+        sdx = 'sda'
+        (1..4).each do |p|
+            path = './tmp/disk_%s.vdi' % sdx.succ!
+            vb.customize %W(createhd --filename #{path} --size 8192) unless File.exist?(path)
+            vb.customize [ 'storageattach', :id, *%W(--storagectl SATA\ Controller --port #{p} --device 0 --type hdd --medium #{path}) ]
+        end
+    end
+end

@@ -1,0 +1,36 @@
+- &dummy
+  Module:       'command'
+  Exec:         'dd if=/dev/zero of=/tmp/dummy.out bs=100M count=1'
+  Unexec:       'rm -f /tmp/dummy.out'
+  Path:         '/tmp/dummy.out'
+
+- &loop
+  Module:       'loopback'
+  Name:         'loop2'
+  Backend:      *dummy
+
+- &cow
+  Module:               'dm-linear'
+  Name:                 'cow1'
+  Devices:
+    - Device:           *loop
+      LogicalStart:     0
+      LogicalEnd:       20480
+      PhysicalStart:    0
+    - Device:           *loop
+      LogicalStart:     20480
+      LogicalEnd:       40960
+      PhysicalStart:    20480
+
+
+- &zero
+  Module:       'dm-zero'
+  Name:         'zero'
+  Size:         40960
+
+
+- &thin
+  Module:       'dm-snapshot'
+  Name:         'thin-vol'
+  Master:       *zero
+  Cow:          *cow

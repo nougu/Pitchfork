@@ -1,0 +1,5 @@
+target-path: /dev/md3
+numjobs: 2
+blocksize: 8k
+rw: randwrite
+duration: 10

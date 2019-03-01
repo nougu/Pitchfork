@@ -1,0 +1,12 @@
+version: '2'
+services:
+  pf:
+    build:
+      context: .
+      args:
+        http_proxy: ${http_proxy}
+        HTTP_PROXY: ${HTTP_PROXY}
+    volumes:
+      - /tmp:/tmp
+      - /dev:/dev
+    privileged: true

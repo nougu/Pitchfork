@@ -1,0 +1,5 @@
+- &lun5
+  Module: 'iscsi-initiator'
+  Lun:    '5'
+  Target: 'localhost'
+  Iqn:    'iqn.2015-03.jp.fujitsu.com:test'

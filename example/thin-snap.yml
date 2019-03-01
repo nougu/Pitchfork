@@ -1,0 +1,45 @@
+- &dummy1
+  Module:       'command'
+  Path:         '/tmp/dummy1.out'
+  Exec:         'dd if=/dev/zero of=/tmp/dummy1.out bs=100M count=1'
+  Unexec:       'rm -f /tmp/dummy1.out'
+
+- &dummy2
+  Module:       'command'
+  Path:         '/tmp/dummy2.out'
+  Exec:         'dd if=/dev/zero of=/tmp/dummy2.out bs=100M count=1'
+  Unexec:       'rm -f /tmp/dummy2.out'
+
+- &loop1
+  Module:       'loopback'
+  Name:         'loop2'
+  Backend:      *dummy1
+
+- &loop2
+  Module:       'loopback'
+  Name:         'loop3'
+  Backend:      *dummy2
+
+- &pool1
+  Module:       'dm-thin_pool'
+  Name:         'pool1'
+  Meta:         *loop1
+  Data:         *loop2
+  Size:         204800   # <sectors> (=> 100MB)
+  BlockSize:    1024     # <sectors> (=> 512KB)
+  LowWaterMark: 20       # <blocks>  (=> 10MB)
+
+- &thin1
+  Module:       'dm-thin_thin'
+  Name:         'thin1'
+  Pool:         *pool1
+  Size:         20480    # 10MB
+  Id:           0        # unused number must be specified
+
+- &snap1
+  Module:       'dm-thin_snap'
+  Name:         'snap1'
+  Pool:         *pool1
+  Size:         20480    # 10MB
+  Id:           1        # unused number must be specified
+  Origin:       *thin1

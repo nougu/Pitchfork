@@ -1,0 +1,48 @@
+- &dummy3
+  Module:       'command'
+  Exec:         'dd if=/dev/zero of=/tmp/dummy3.out bs=100M count=1'
+  Unexec:       'rm -f /tmp/dummy3.out'
+  Path:         '/tmp/dummy3.out'
+
+- &dummy4
+  Module:       'command'
+  Exec:         'dd if=/dev/zero of=/tmp/dummy4.out bs=100M count=1'
+  Unexec:       'rm -f /tmp/dummy4.out'
+  Path:         '/tmp/dummy4.out'
+
+- &dummy5
+  Module:       'command'
+  Exec:         'dd if=/dev/zero of=/tmp/dummy5.out bs=100M count=1'
+  Unexec:       'rm -f /tmp/dummy5.out'
+  Path:         '/tmp/dummy5.out'
+
+- &back
+  Module:       'loopback'
+  Name:         'loop3'
+  Backend:      *dummy3
+
+- &cache
+  Module:       'loopback'
+  Name:         'loop4'
+  Backend:      *dummy4
+
+- &meta
+  Module:       'loopback'
+  Name:         'loop5'
+  Backend:      *dummy5
+
+- &dcache
+  Module:       'dm-cache'
+  Name:         'dcache'
+  Backend:      *back
+  Cache:        *cache
+  Meta:         *meta
+  SequentialThreshold: 512
+  RandomThreshold: 512
+
+- &crypt
+  Module:       'dm-crypt'
+  Name:         'cry'
+  Backend:      *dcache
+  Cipher:       'aes-cbc-essiv:sha256'
+  Key:          'aa3b3a56161d74807df032f0d7e449e845532ef83800d88f1862d584bc0a4f57'
